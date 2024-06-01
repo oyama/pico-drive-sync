@@ -3,15 +3,20 @@
 #include <bsp/board.h>
 #include <tusb.h>
 #include "blockdevice/heap.h"
+#include <pico/time.h>
+
 
 static bool ejected = false;
 static bool usb_connected = false;
 
 extern blockdevice_t *blockdevice_heap;
 
+static int64_t usb_ticks = 10;
+static int64_t usb_last_ticks = 0;
 
-bool usb_connection_status(void) {
-    return usb_connected;
+
+bool is_usb_write_access(void) {
+    return (usb_ticks - usb_last_ticks) < 3;
 }
 
 void tud_mount_cb(void) {
@@ -38,11 +43,12 @@ void tud_msc_inquiry_cb(uint8_t lun, uint8_t vendor_id[8], uint8_t product_id[16
 bool tud_msc_test_unit_ready_cb(uint8_t lun) {
     (void) lun;
 
+    usb_ticks++;
+
     if (ejected) {
         tud_msc_set_sense(lun, SCSI_SENSE_NOT_READY, 0x3a, 0x00);
         return false;
     }
-
     return true;
 }
 
@@ -55,6 +61,7 @@ void tud_msc_capacity_cb(uint8_t lun, uint32_t *block_count, uint16_t *block_siz
 bool tud_msc_start_stop_cb(uint8_t lun, uint8_t power_condition, bool start, bool load_eject) {
     (void) lun;
     (void) power_condition;
+
     if ( load_eject ) {
         if (start) {
             // load disk storage
@@ -79,6 +86,7 @@ int32_t tud_msc_read10_cb(uint8_t lun, uint32_t lba, uint32_t offset, void *buff
 
 bool tud_msc_is_writable_cb (uint8_t lun) {
     (void) lun;
+    usb_last_ticks = usb_ticks;
     return true;
 }
 

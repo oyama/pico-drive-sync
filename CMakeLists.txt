@@ -34,7 +34,7 @@ target_link_libraries(sync PRIVATE
 )
 pico_enable_stdio_usb(sync 1)
 pico_enable_filesystem(sync SIZE ${FLASH_SIZE} FS_INIT src/fs_init.c)
-
+pico_add_extra_outputs(sync)
 target_link_options(sync PRIVATE -Wl,--print-memory-usage)
 pico_set_binary_type(sync no_flash)
 
