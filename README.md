@@ -1,6 +1,6 @@
 # Pico Drive Sync - Seamlessly share littlefs from Raspberry Pi Pico's onboard flash via USB
 
-This project enables the sharing of data stored on the Raspberry Pi Pico’s flash memory, formatted with the littlefs file system, as a USB storage device that can be accessed from a PC. The project allows both read and write operations and easy backup and inspection from the PC without the need for special tools normally required for such operations.
+This project enables the sharing of data stored on the Raspberry Pi Pico's flash memory, formatted with the littlefs file system, as a USB storage device that can be accessed from a PC. It supports both read and write operations, allowing for easy backup and inspection directly from the PC without the need for specialized tools normally required for such tasks.
 
 The firmware is designed to be deployed in RAM. The total file size that can be shared via USB MSC is limited to the RAM disk size of 64 KB.
 
