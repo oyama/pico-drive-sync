@@ -157,6 +157,8 @@ static bool is_end_of_usb_msc_write(void) {
     return result;
 }
 
+extern void usbd_int_set(bool enabled);
+
 int main(void) {
     tud_init(BOARD_TUD_RHPORT);
     stdio_init_all();
@@ -166,7 +168,6 @@ int main(void) {
     }
 
     directory_file_copy("/flash", "/ram");
-
     printf("USB MSC start\n");
     while (1) {
          if (is_end_of_usb_msc_write()) {
