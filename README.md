@@ -18,6 +18,10 @@ Extract the firmware to the Pico's RAM and run it
 
 When reset, the Pico operates with the original firmware
 
+## Limitations
+
+- Windows 11 does not automatically start the USB MSC when the Pico is booted from RAM. This problem can be avoided by restarting Windows 11.
+  
 ## Build and Run
 
 To compile and install this project, a setup with the [pico-sdk](https://github.com/raspberrypi/pico-sdk) is necessary. Please refer to [Getting Started with Raspberry Pi Pico](https://datasheets.raspberrypi.com/pico/getting-started-with-pico.pdf) to prepare your toolchain. This project incorporates [pico-vfs](https://github.com/oyama/pico-vfs) and [littlefs](https://github.com/littlefs-project/littlefs) as _git submodule_, which requires an update post-checkout.
