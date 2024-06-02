@@ -29,10 +29,10 @@ target_link_libraries(sync PRIVATE
   filesystem_littlefs
   filesystem_fat
   filesystem_vfs
-  tinyusb_board
   tinyusb_device
 )
 pico_enable_stdio_usb(sync 1)
+#pico_enable_stdio_uart(sync 0)
 pico_enable_filesystem(sync SIZE ${FLASH_SIZE} FS_INIT src/fs_init.c)
 pico_add_extra_outputs(sync)
 target_link_options(sync PRIVATE -Wl,--print-memory-usage)

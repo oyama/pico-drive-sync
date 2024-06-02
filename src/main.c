@@ -3,7 +3,6 @@
  * Copyright 2024, Hiroyuki OYAMA. All rights reserved.
  * SPDX-License-Identifier: BSD-3-Clause
  */
-#include <bsp/board.h>
 #include <dirent.h>
 #include <errno.h>
 #include <stdio.h>
@@ -13,8 +12,9 @@
 #include <tusb.h>
 #include "filesystem/vfs.h"
 
-#define SRC_PREFIX   "/flash"
-#define DIST_PREFIX   "/ram"
+#define SRC_PREFIX          "/flash"
+#define DIST_PREFIX         "/ram"
+#define WINDOWS_HIDDEN_DIR  "System Volume Information"
 
 
 static uint8_t copy_buffer[512] = {0};  // Buffer used for file copying. This location because we want to reduce memory
@@ -82,6 +82,8 @@ static void directory_file_copy(const char *src, const char *dist) {
                                       strcmp(ent->d_name, "..") == 0)) {
             continue;
         } else if (ent->d_type == DT_DIR && ent->d_name[0] == '.') {
+            continue;
+        } else if (ent->d_type == DT_DIR && strcmp(ent->d_name, WINDOWS_HIDDEN_DIR) == 0) {
             continue;
         } else if (ent->d_type == DT_DIR || ent->d_type == DT_REG) {
             snprintf(src_path, sizeof(src_path) - 1, "%s/%s", src, ent->d_name);
@@ -156,7 +158,6 @@ static bool is_end_of_usb_msc_write(void) {
 }
 
 int main(void) {
-    board_init();
     tud_init(BOARD_TUD_RHPORT);
     stdio_init_all();
     if (!fs_init()) {

@@ -14,7 +14,6 @@
 #define USB_WRITE_ACCESS_MINIMUM_TICKS    3  // Minimum number of `usb_ticks` to be considered as being written
 
 static bool ejected = false;
-static bool usb_connected = false;
 
 extern blockdevice_t *blockdevice_heap;  // from fs_init.c
 
@@ -35,12 +34,10 @@ bool is_usb_write_access(void) {
 }
 
 void tud_mount_cb(void) {
-    usb_connected = true;
 }
 
 void tud_suspend_cb(bool remote_wakeup_en) {
     (void)remote_wakeup_en;
-    usb_connected = false;
 }
 
 void tud_msc_inquiry_cb(uint8_t lun, uint8_t vendor_id[8], uint8_t product_id[16], uint8_t product_rev[4]) {
