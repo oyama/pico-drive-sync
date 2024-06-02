@@ -1,6 +1,7 @@
 # Pico Drive Sync - Seamlessly share littlefs from Raspberry Pi Pico's onboard flash via USB
 
 This project is a tool designed to share data stored on the Raspberry Pi Pico's flash memory as a USB storage device that can be accessed directly from a PC. It allows for easy backup and inspection of files on embedded devices' filesystems without the need for specialized tools typically required for such operations. By mounting it as a USB drive on a PC, file manipulation becomes intuitive, significantly enhancing development efficiency.
+
 The firmware is designed to be deployed in RAM. The total file size that can be shared via USB MSC is limited to the RAM disk size of 64 KB.
 
 ## How it works
