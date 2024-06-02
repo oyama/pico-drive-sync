@@ -1,3 +1,8 @@
+/*
+ * Copyright 2024, Hiroyuki OYAMA. All rights reserved.
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
+
 #include <string.h>
 #include <ctype.h>
 #include <bsp/board.h>
@@ -6,17 +11,27 @@
 #include <pico/time.h>
 
 
+#define USB_WRITE_ACCESS_MINIMUM_TICKS    3  // Minimum number of `usb_ticks` to be considered as being written
+
 static bool ejected = false;
 static bool usb_connected = false;
 
-extern blockdevice_t *blockdevice_heap;
+extern blockdevice_t *blockdevice_heap;  // from fs_init.c
 
+/* NOTE:
+ * The counter is incremented by a call to `tud_msc_test_unit_ready_cb` as the timer
+ *  does not run during RAM execution.
+ */
 static int64_t usb_ticks = 10;
 static int64_t usb_last_ticks = 0;
 
-
+/* USB MSC Host device write status
+ *
+ * @retval true  being written
+ * @retval false Not written
+ */
 bool is_usb_write_access(void) {
-    return (usb_ticks - usb_last_ticks) < 3;
+    return (usb_ticks - usb_last_ticks) < USB_WRITE_ACCESS_MINIMUM_TICKS;
 }
 
 void tud_mount_cb(void) {

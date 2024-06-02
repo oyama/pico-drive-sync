@@ -1,15 +1,18 @@
 # Pico Drive Sync - Seamlessly share littlefs from Raspberry Pi Pico's onboard flash via USB
 
 This project is a tool designed to share data stored on the Raspberry Pi Pico's flash memory as a USB storage device that can be accessed directly from a PC. It allows for easy backup and inspection of files on embedded devices' filesystems without the need for specialized tools typically required for such operations. By mounting it as a USB drive on a PC, file manipulation becomes intuitive, significantly enhancing development efficiency.
+The firmware is designed to be deployed in RAM. The total file size that can be shared via USB MSC is limited to the RAM disk size of 64 KB.
 
-## How the programme works
+## How it works
 
 1. Create a RAM disk with FAT and mount it to `/ram`
 2. Mount the onboard flash memory littlefs to `/flash`
 3. Copy the contents of `/flash` to `/ram`
 4. Start USB MSC
+5. Wait for host PC to write.
+6. When the writing is finished, copy the content from `/ram` to `/flash`
+7. Repeat from step 5
 
-The firmware is designed to be deployed in RAM, not flash. The total file size that can be shared via USB MSC is limited to the RAM disk size of 64 KB.
 
 ## Build and Run
 
@@ -24,7 +27,7 @@ mkdir build; cd build;
 PICO_SDK_PATH=/path/to/pico-sdk cmake ..
 make run
 ```
-If the compilation is successful, the programme is loaded into Pico's RAM using `openocd` and executed.
+If the compilation is successful, the programme is loaded into Pico's RAM using `openocd` and executed. The `openocd` command is required to place the firmware in RAM and run it.
 
 ## Configuration
 
