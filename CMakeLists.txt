@@ -19,7 +19,7 @@ add_executable(sync
   src/usb_descriptors.c
   src/usb_msc.c
 )
-target_compile_options(sync PRIVATE -Os -DPICO_VFS_NO_RTC=1  -Werror -Wall -Wextra -Wnull-dereference)
+target_compile_options(sync PRIVATE -Os -DPICO_VFS_NO_RTC=1 -Werror -Wall -Wextra -Wnull-dereference)
 target_include_directories(sync PRIVATE ${CMAKE_CURRENT_LIST_DIR}/include)
 target_link_libraries(sync PRIVATE
   pico_stdlib
@@ -49,13 +49,11 @@ find_program(OPENOCD openocd)
 if(OPENOCD)
   add_custom_target(run COMMAND
     ${OPENOCD} -f interface/cmsis-dap.cfg -f target/rp2040.cfg
-               -c "adapter speed 5000" -c "init" -c "reset halt" -c "load_image deinit.elf" -c "resume 0x20000000"
-               -c "sleep 250" -c "reset halt" -c "load_image sync.elf" -c "resume 0x20000000" -c "exit"
+               -c "adapter speed 5000" -c "init"
+               -c "reset halt" -c "load_image deinit.elf" -c "resume 0x20000000"
+               -c "sleep 250"
+               -c "reset halt" -c "load_image sync.elf" -c "resume 0x20000000"
+               -c "exit"
     DEPENDS deinit sync
-  )
-  add_custom_target(run_deinit COMMAND
-    ${OPENOCD} -f interface/cmsis-dap.cfg -f target/rp2040.cfg
-               -c "adapter speed 5000" -c "init" -c "reset halt" -c "load_image deinit.elf" -c "resume 0x20000000" -c "exit"
-    DEPENDS deinit
   )
 endif()
