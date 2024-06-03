@@ -30,19 +30,10 @@ target_link_libraries(sync PRIVATE
   filesystem_vfs
   tinyusb_device
 )
+target_link_options(sync PRIVATE -Wl,--print-memory-usage)
 pico_enable_stdio_usb(sync 1)
 pico_enable_filesystem(sync SIZE ${FLASH_SIZE} FS_INIT src/fs_init.c)
-target_link_options(sync PRIVATE -Wl,--print-memory-usage)
 pico_set_binary_type(sync no_flash)
-
-#
-# Firmware to be disconnected in order to initialise the USB device.
-# See also: https://github.com/oyama/pico-drive-sync/issues/3
-#
-add_executable(deinit src/deinit.c)
-target_link_libraries(deinit PRIVATE pico_stdlib)
-pico_enable_stdio_usb(deinit 1)
-pico_set_binary_type(deinit no_flash)
 
 
 find_program(OPENOCD openocd)
@@ -50,10 +41,8 @@ if(OPENOCD)
   add_custom_target(run COMMAND
     ${OPENOCD} -f interface/cmsis-dap.cfg -f target/rp2040.cfg
                -c "adapter speed 5000" -c "init"
-               -c "reset halt" -c "load_image deinit.elf" -c "resume 0x20000000"
-               -c "sleep 250"
                -c "reset halt" -c "load_image sync.elf" -c "resume 0x20000000"
                -c "exit"
-    DEPENDS deinit sync
+    DEPENDS sync
   )
 endif()

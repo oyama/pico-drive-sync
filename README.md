@@ -32,7 +32,6 @@ PICO_SDK_PATH=/path/to/pico-sdk cmake ..
 make run
 ```
 If the compilation is successful, the programme is loaded into Pico's RAM using `openocd` and executed. The `openocd` command is required to place the firmware in RAM and run it.
-To disconnect the host PC from the USB connection, two sequences of firmware `deinit` for the disconnection and `sync` for the synchronisation are executed in RAM.
 
 ## Configuration
 

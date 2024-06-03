@@ -15,6 +15,7 @@
 #define SRC_PREFIX          "/flash"
 #define DIST_PREFIX         "/ram"
 #define WINDOWS_HIDDEN_DIR  "System Volume Information"
+#define USB_HOST_RECOGNISE_TIME   (1000 * 1000 * 3) // Time required for the USB host to recognise the change. Approx. 250 ms min
 
 
 static uint8_t copy_buffer[512] = {0};  // Buffer used for file copying. This location because we want to reduce memory
@@ -157,11 +158,23 @@ static bool is_end_of_usb_msc_write(void) {
     return result;
 }
 
-extern void usbd_int_set(bool enabled);
+/*
+ * NOTE: When executing in RAM, sleep_ms() and busy_wait() do not work, so it loops busy by itself.
+ */
+static void _busy_loop(size_t count) {
+    for (volatile size_t i = 0; i < count; i++)
+        ;
+}
 
 int main(void) {
     tud_init(BOARD_TUD_RHPORT);
     stdio_init_all();
+
+    tud_disconnect();
+    _busy_loop(USB_HOST_RECOGNISE_TIME);
+    tud_connect();
+    _busy_loop(USB_HOST_RECOGNISE_TIME);
+
     if (!fs_init()) {
         fprintf(stderr, "File system initialize failure\n");
         return -1;
