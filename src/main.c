@@ -5,18 +5,17 @@
  */
 #include <dirent.h>
 #include <errno.h>
+#include <hardware/structs/timer.h>
 #include <stdio.h>
 #include <string.h>
 #include <pico/stdlib.h>
-#include <pico/time.h>
 #include <tusb.h>
 #include "filesystem/vfs.h"
 
 #define SRC_PREFIX          "/flash"
 #define DIST_PREFIX         "/ram"
 #define WINDOWS_HIDDEN_DIR  "System Volume Information"
-#define USB_HOST_RECOGNISE_TIME   (1000 * 1000 * 3) // Time required for the USB host to recognise the change. Approx. 250 ms min
-
+#define USB_HOST_RECOGNISE_TIME   (250) // Time required for the USB host to recognise the change. Approx. 250 ms min
 
 static uint8_t copy_buffer[512] = {0};  // Buffer used for file copying. This location because we want to reduce memory
 extern bool is_usb_write_access(void);  // from usb_msc.c
@@ -159,21 +158,18 @@ static bool is_end_of_usb_msc_write(void) {
 }
 
 static void reconnect_usb_for_host(void) {
+    timer_hw->dbgpause = 0;  // NOTE: https://github.com/raspberrypi/pico-sdk/issues/1152
+
     tud_disconnect();
-    // NOTE: When executing in RAM, sleep_ms() and busy_wait() do not work, so it loops busy by itself.
-    for (volatile size_t i = 0; i < USB_HOST_RECOGNISE_TIME; i++)
-        ;
+    sleep_ms(USB_HOST_RECOGNISE_TIME);
     tud_connect();
-    for (volatile size_t i = 0; i < USB_HOST_RECOGNISE_TIME; i++)
-        ;
+    sleep_ms(USB_HOST_RECOGNISE_TIME);
 }
 
 int main(void) {
     tud_init(BOARD_TUD_RHPORT);
     stdio_init_all();
-
     reconnect_usb_for_host();
-
     if (!fs_init()) {
         fprintf(stderr, "File system initialize failure\n");
         return -1;
