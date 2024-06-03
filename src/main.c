@@ -158,11 +158,13 @@ static bool is_end_of_usb_msc_write(void) {
     return result;
 }
 
-/*
- * NOTE: When executing in RAM, sleep_ms() and busy_wait() do not work, so it loops busy by itself.
- */
-static void _busy_loop(size_t count) {
-    for (volatile size_t i = 0; i < count; i++)
+static void reconnect_usb_for_host(void) {
+    tud_disconnect();
+    // NOTE: When executing in RAM, sleep_ms() and busy_wait() do not work, so it loops busy by itself.
+    for (volatile size_t i = 0; i < USB_HOST_RECOGNISE_TIME; i++)
+        ;
+    tud_connect();
+    for (volatile size_t i = 0; i < USB_HOST_RECOGNISE_TIME; i++)
         ;
 }
 
@@ -170,10 +172,7 @@ int main(void) {
     tud_init(BOARD_TUD_RHPORT);
     stdio_init_all();
 
-    tud_disconnect();
-    _busy_loop(USB_HOST_RECOGNISE_TIME);
-    tud_connect();
-    _busy_loop(USB_HOST_RECOGNISE_TIME);
+    reconnect_usb_for_host();
 
     if (!fs_init()) {
         fprintf(stderr, "File system initialize failure\n");
