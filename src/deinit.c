@@ -13,7 +13,6 @@ int main(void) {
 
     printf("\nShutdown the USB device ...");
     tud_disconnect();
-    sleep_ms(250);
     printf("ok\n");
 }
 

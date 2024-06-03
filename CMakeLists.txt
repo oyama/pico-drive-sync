@@ -50,7 +50,7 @@ if(OPENOCD)
   add_custom_target(run COMMAND
     ${OPENOCD} -f interface/cmsis-dap.cfg -f target/rp2040.cfg
                -c "adapter speed 5000" -c "init" -c "reset halt" -c "load_image deinit.elf" -c "resume 0x20000000"
-               -c "reset halt" -c "load_image sync.elf" -c "resume 0x20000000" -c "exit"
+               -c "sleep 250" -c "reset halt" -c "load_image sync.elf" -c "resume 0x20000000" -c "exit"
     DEPENDS deinit sync
   )
   add_custom_target(run_deinit COMMAND
