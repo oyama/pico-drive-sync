@@ -11,6 +11,7 @@
 #include <pico/stdlib.h>
 #include <tusb.h>
 #include "filesystem/vfs.h"
+#include "ssi_enable.h"
 
 #define SRC_PREFIX          "/flash"
 #define DIST_PREFIX         "/ram"
@@ -170,6 +171,8 @@ int main(void) {
     tud_init(BOARD_TUD_RHPORT);
     stdio_init_all();
     reconnect_usb_for_host();
+
+    ssi_enable();
     if (!fs_init()) {
         fprintf(stderr, "File system initialize failure\n");
         return -1;

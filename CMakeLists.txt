@@ -16,6 +16,7 @@ pico_sdk_init()
 
 add_executable(sync
   src/main.c
+  src/ssi_enable.c
   src/usb_descriptors.c
   src/usb_msc.c
 )
@@ -34,15 +35,4 @@ target_link_options(sync PRIVATE -Wl,--print-memory-usage)
 pico_enable_stdio_usb(sync 1)
 pico_enable_filesystem(sync SIZE ${FLASH_SIZE} FS_INIT src/fs_init.c)
 pico_set_binary_type(sync no_flash)
-
-
-find_program(OPENOCD openocd)
-if(OPENOCD)
-  add_custom_target(run COMMAND
-    ${OPENOCD} -f interface/cmsis-dap.cfg -f target/rp2040.cfg
-               -c "adapter speed 5000" -c "init"
-               -c "reset halt" -c "load_image sync.elf" -c "resume 0x20000000"
-               -c "exit"
-    DEPENDS sync
-  )
-endif()
+pico_add_extra_outputs(sync)

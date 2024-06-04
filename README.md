@@ -29,9 +29,16 @@ git submodule update --init --recursive
 
 mkdir build; cd build;
 PICO_SDK_PATH=/path/to/pico-sdk cmake ..
-make run
+make
 ```
-If the compilation is successful, the programme is loaded into Pico's RAM using `openocd` and executed. The `openocd` command is required to place the firmware in RAM and run it.
+Successful compilation will generate `sync.uf2`. Simply drag and drop this onto the Raspberry Pi Pico and the firmware will be executate from RAM.
+Alternatively, it can be performed using [picotool](https://github.com/raspberrypi/picotool):
+
+```bash
+picotool load --execute sync.uf2 --force
+```
+
+When the file operation on the host PC is finished, restart Pico and it will run with the original firmware from the flash.
 
 ## Configuration
 
