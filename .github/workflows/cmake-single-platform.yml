@@ -54,3 +54,9 @@ jobs:
       working-directory: ${{github.workspace}}/pico-drive-sync/build
       shell: bash
       run: cmake --build . --config $BUILD_TYPE
+      
+    - name: Upload .uf2 file
+      uses: actions/upload-artifact@v4
+      with:
+        name: sync.uf2
+        path:  ${{github.workspace}}/pico-drive-sync/build/sync.uf2
