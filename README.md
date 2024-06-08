@@ -18,6 +18,17 @@ Extract the firmware to the Pico's RAM and run it
 
 When reset, the Pico operates with the original firmware
 
+## Using Pre-built Firmware
+
+For those who prefer not to build the firmware from source, pre-built binaries are available under the [Releases](https://github.com/oyama/pico-drive-sync/releases) section of this repository. To use the pre-built firmware, follow these steps:
+
+1. Download the latest `sync.uf2` file from the Releases page.
+2. Connect your Raspberry Pi Pico to your PC in BOOTCEL mode (hold the BOOTSEL button while connecting via USB).
+3. Drag and drop the downloaded `sync.uf2` file onto the RPI-RP2 drive that appears on your computer.
+4. The Pico will automatically reboot and start running the new firmware after the file transfer is complete.
+
+This allows you to quickly test and use the application without needing to set up a development environment.
+
 ## Build and Run
 
 To compile and install this project, a setup with the [pico-sdk](https://github.com/raspberrypi/pico-sdk) is necessary. Please refer to [Getting Started with Raspberry Pi Pico](https://datasheets.raspberrypi.com/pico/getting-started-with-pico.pdf) to prepare your toolchain. This project incorporates [pico-vfs](https://github.com/oyama/pico-vfs) and [littlefs](https://github.com/littlefs-project/littlefs) as _git submodule_, which requires an update post-checkout.
