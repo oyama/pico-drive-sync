@@ -18,8 +18,8 @@ jobs:
         
     - name: Install build GNU Arm Embedded Toolchain
       run: |
-        sudo apt-get update --quiet
-        sudo apt-get install -qq gcc-arm-none-eabi
+        sudo apt-get -qq update
+        sudo apt-get -qq install gcc-arm-none-eabi
  
     - name: Checkout pico-sdk/master
       uses: actions/checkout@v4
