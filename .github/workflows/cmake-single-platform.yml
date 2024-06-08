@@ -15,7 +15,12 @@ jobs:
         echo "Cleaning up previous run"
         rm -rf "${{ github.workspace }}"
         mkdir -p "${{ github.workspace }}"
-
+        
+    - name: Install build GNU Arm Embedded Toolchain
+      run: |
+        sudo apt-get update
+        sudo apt-get install gcc-arm-none-eabi
+ 
     - name: Checkout pico-drive-sync
       uses: actions/checkout@v2
       with:
