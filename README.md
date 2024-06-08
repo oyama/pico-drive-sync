@@ -53,7 +53,7 @@ When the file operation on the host PC is finished, restart Pico and it will run
 
 ## Configuration
 
-Specify the block device size of the littlefs on the flash memory with the option `-DFLASH_SIZE` in CMake. If not specified, `1441792` bytes are set.
+Specify the block device size of the littlefs on the flash memory with the option `-DFLASH_SIZE` in CMake. If not specified, `1441792` bytes are set. This is a setting consistent with the file system of the MicroPython environment.
 
 ```bash
 PICO_SDK_PATH=/path/to/pico-sdk cmake .. -DFLASH_SIZE=1441792
