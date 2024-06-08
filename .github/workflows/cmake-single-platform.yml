@@ -1,0 +1,62 @@
+name: CMake on a single platform
+
+on: [push, pull_request]
+
+env:
+  BUILD_TYPE: Release
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Clean workspace
+      run: |
+        echo "Cleaning up previous run"
+        rm -rf "${{ github.workspace }}"
+        mkdir -p "${{ github.workspace }}"
+        
+    - name: Install build GNU Arm Embedded Toolchain
+      run: |
+        sudo apt-get -qq update
+        sudo apt-get -qq install gcc-arm-none-eabi
+ 
+    - name: Checkout pico-sdk/master
+      uses: actions/checkout@v4
+      with:
+        repository: raspberrypi/pico-sdk
+        ref: master
+        path: pico-sdk
+
+    - name: Checkout pico-sdk submodules
+      working-directory: ${{github.workspace}}/pico-sdk
+      run: git submodule update --init
+
+    - name: Checkout pico-drive-sync
+      uses: actions/checkout@v4
+      with:
+        path: pico-drive-sync
+
+    - name: Checkout pico-drive-sync submodules
+      working-directory: ${{github.workspace}}/pico-drive-sync
+      run: git submodule update --init --recursive
+
+    - name: Create Build Environment
+      working-directory: ${{github.workspace}}/pico-drive-sync
+      run:  cmake -E make_directory ${{github.workspace}}/pico-drive-sync/build
+
+    - name: Configure CMake
+      shell: bash
+      working-directory: ${{github.workspace}}/pico-drive-sync/build
+      run: PICO_SDK_PATH=../../pico-sdk cmake .. -DCMAKE_BUILD_TYPE=$BUILD_TYPE
+      
+    - name: Build
+      working-directory: ${{github.workspace}}/pico-drive-sync/build
+      shell: bash
+      run: cmake --build . --config $BUILD_TYPE
+      
+    - name: Upload .uf2 file
+      uses: actions/upload-artifact@v4
+      with:
+        name: sync.uf2
+        path:  ${{github.workspace}}/pico-drive-sync/build/sync.uf2
